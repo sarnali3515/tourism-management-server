@@ -28,6 +28,7 @@ async function run() {
         await client.connect();
 
         const spotsCollection = client.db('spotsDB').collection('spots');
+        const userCollection = client.db('spotsDB').collection('users');
 
         app.get('/spots', async (req, res) => {
             const cursor = spotsCollection.find();
@@ -48,6 +49,15 @@ async function run() {
             const result = await spotsCollection.insertOne(newSpot);
             res.send(result);
         })
+
+
+        // user related apis
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            console.log(user);
+            const result = await userCollection.insertOne(user);
+            res.send(result);
+        });
 
 
         // Send a ping to confirm a successful connection
