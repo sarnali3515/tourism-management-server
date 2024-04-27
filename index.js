@@ -11,7 +11,6 @@ app.use(express.json());
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.sgvl42h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
-console.log(uri)
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -43,13 +42,19 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/spots/email/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email };
+            const result = await spotsCollection.find(query).toArray();
+            res.send(result)
+        })
+
         app.post('/spots', async (req, res) => {
             const newSpot = req.body;
             console.log(newSpot);
             const result = await spotsCollection.insertOne(newSpot);
             res.send(result);
         })
-
 
 
 
@@ -66,8 +71,6 @@ async function run() {
             const result = await userCollection.insertOne(user);
             res.send(result);
         });
-
-
 
 
         // Send a ping to confirm a successful connection
