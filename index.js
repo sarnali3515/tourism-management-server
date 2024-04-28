@@ -28,6 +28,7 @@ async function run() {
 
         const spotsCollection = client.db('spotsDB').collection('spots');
         const userCollection = client.db('spotsDB').collection('users');
+        const countryCollection = client.db('spotsDB').collection('countries');
 
         app.get('/spots', async (req, res) => {
             const cursor = spotsCollection.find();
@@ -102,6 +103,14 @@ async function run() {
             const result = await userCollection.insertOne(user);
             res.send(result);
         });
+
+
+        //country apis
+        app.get('/countries', async (req, res) => {
+            const cursor = countryCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
 
 
         // Send a ping to confirm a successful connection
