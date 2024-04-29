@@ -6,7 +6,12 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // middleware
-app.use(cors());
+const corsConfig = {
+    origin: ["http://localhost:5173", "https://tourism-management-trails.web.app"],
+    Credential: true
+}
+
+app.use(cors(corsConfig));
 app.use(express.json());
 
 
@@ -24,7 +29,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
 
         const spotsCollection = client.db('spotsDB').collection('spots');
         const userCollection = client.db('spotsDB').collection('users');
@@ -46,6 +51,12 @@ async function run() {
         app.get('/spots/email/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email: email };
+            const result = await spotsCollection.find(query).toArray();
+            res.send(result)
+        })
+        app.get('/spotsCountry/:country', async (req, res) => {
+            const country = req.params.country;
+            const query = { country: country };
             const result = await spotsCollection.find(query).toArray();
             res.send(result)
         })
@@ -109,6 +120,12 @@ async function run() {
         app.get('/countries', async (req, res) => {
             const cursor = countryCollection.find();
             const result = await cursor.toArray();
+            res.send(result);
+        })
+        app.get('/countries/:country', async (req, res) => {
+            const country = req.params.country;
+            const query = { country: country };
+            const result = await countryCollection.find(query).toArray();
             res.send(result);
         })
 
